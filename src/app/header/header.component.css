@@ -1,0 +1,5 @@
+.dropdown-menu {
+    right: 0;
+    left: initial;
+    margin-right: auto !important; /* Only if you can't delete the inline margin-right applied to this element */
+}

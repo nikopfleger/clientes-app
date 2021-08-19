@@ -1,0 +1,78 @@
+<ul class="alert alert-danger" *ngIf="errores.length > 0">
+  <li *ngFor="let err of errores"> {{ err }}</li>
+</ul>
+
+<div class="card bg-dark text-white my-2">
+  <div class="card-header"> {{ titulo }} </div>
+  <div class="card-body">
+
+    <form #f="ngForm">
+      <div class="form-group row">
+        <label for="nombre" class="col-form-label col-sm-2 my-2">Nombre</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control my-2" [(ngModel)]="cliente.nombre" name="nombre" placeholder="Ingrese su nombre" required minlength="4" #nombre="ngModel">
+          <div *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+            <div *ngIf="nombre.errors?.required">Nombre es requerido</div>
+            <div *ngIf="nombre.errors?.minlength">Debe tener al menos 4 caracteres</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="apellido" class="col-form-label col-sm-2 my-2">Apellido</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control my-2" [(ngModel)]="cliente.apellido" name="apellido" placeholder="Ingrese su apellido" required minlength="4" #apellido="ngModel">
+          <div *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+            <div *ngIf="apellido.errors?.required">apellido es requerido</div>
+            <div *ngIf="apellido.errors?.minlength">Debe tener al menos 4 caracteres</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group row my-2">
+        <label for="email" class="col-form-label col-sm-2">E-Mail</label>
+        <div class="col-sm-6">
+          <input type="text" class="form-control" [(ngModel)]="cliente.email" name="email" placeholder="Ingrese su e-mail" required email #email="ngModel">
+          <div *ngIf="email.invalid && (email.dirty || email.touched)">
+            <div *ngIf="email.errors?.required">E-mail es requerido</div>
+            <div *ngIf="email.errors?.email">E-mail debe tener un formato válido</div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="form-group row">
+        <label for="createAt" class="col-form-label col-sm-2 my-2">Fecha</label>
+        <div class="col-sm-6">
+          <input matInput readonly [matDatepicker]="createAt" class="form-control my-2" [(ngModel)]="cliente.createAt" name="createAt" style="display:inline; width:300px">
+          <mat-datepicker-toggle matSuffix [for]="createAt"></mat-datepicker-toggle>
+          <mat-datepicker #createAt></mat-datepicker>
+        </div>
+      </div>
+
+      <div class="form-group row">
+        <label for="region" class="col-form-label col-sm-2 my-2">Region</label>
+        <div class="col-sm-6">
+          <select [compareWith]="compararRegion" class="form-control my-2" [(ngModel)]="cliente.region" name="region" style="display:inline; width:500px">
+            <option [ngValue]="undefined"> --- Seleccionar una región --- </option>
+            <option *ngFor="let region of regiones" [ngValue]="region">{{ region.nombre }}</option>
+          </select>
+        </div>
+      </div>
+
+
+      <div class="form-group row my-2">
+        <div class="col-sm-6">
+          <button class="btn btn-primary my-2" role="button" (click)="create()" *ngIf="!cliente.id else elseBlock" [disabled]="!f.form.valid">Crear</button>
+
+          <ng-template #elseBlock>
+            <button class="btn btn-primary my-2" role="button" (click)="update()" [disabled]="!f.form.valid">Editar</button>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+</div>
