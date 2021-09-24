@@ -7,6 +7,9 @@ import { AuthService } from '../../usuarios/auth.service'
 import Swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 
+import { FacturaService } from '../../facturas/services/factura.service';
+import { Factura } from '../../facturas/models/factura'
+
 @Component({
   selector: 'detalle-cliente',
   templateUrl: './detalle.component.html',
@@ -21,6 +24,7 @@ export class DetalleComponent implements OnInit {
   progreso: number = 0;
 
   constructor(private clienteService: ClienteService,
+    private facturaService: FacturaService,
     private modalService: ModalService,
     private _authService: AuthService) { }
 
@@ -64,6 +68,53 @@ export class DetalleComponent implements OnInit {
     this.modalService.cerrarModal();
     this.fotoSeleccionada = null;
     this.progreso = 0;
+  }
+
+  delete(factura:Factura): void {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+
+    swalWithBootstrapButtons.fire({
+      title: 'Está seguro?',
+      text: `¿Seguro que desea eliminar la factura ${factura.descripcion}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminar!',
+      cancelButtonText: 'No, cancelar!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        this.facturaService.delete(factura.id).subscribe(
+          () => {
+            this.cliente.facturas = this.cliente.facturas.filter(f => f !== factura)
+            Swal.fire(
+              'Factura Eliminada!',
+              `Factura ${factura.descripcion} eliminada con éxito.`,
+              'success'
+            )
+          }
+        )
+
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+      'Cancelado',
+      'La factura no ha sido eliminada',
+      'error'
+     )
+
+      }
+    })
+
   }
 
   get ModalService() {

@@ -54,6 +54,7 @@ export class FormComponent implements OnInit {
   }
 
   update():void {
+    this.cliente.facturas = null //NO ME INTERESA EDITAR LAS FACTURAS
     this.clienteService.update(this.cliente)
     .subscribe(
       response => {
